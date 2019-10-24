@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="popup.css"/>
+	</head>
+
+	<body>
+		<div>
+			<label for="mode">View mode: </label>
+			<select id="mode">
+				<option value="table">Table</option>
+				<option value="text">Text</option>
+			</select>
+		</div>
+		<div id="table" class="hidden">
+			<p><input type="text" id="search" placeholder="Search..."></p>
+			<table class="borders" style="width: 100%;">
+				<thead>
+					<tr>
+						<th>Origin</th>
+						<th>Request</th>
+						<th title="JavaScript">JS</th>
+						<th title="XMLHttpRequest">XHR</th>
+						<th title="<iframe> or <frame>">FRAME</th>
+					</tr>
+				</thead>
+				<tbody id="rules"></tbody>
+			</table>
+		</div>
+		<div id="text" class="hidden">
+			<p>
+				Syntax: origin request javascript xhr frame<br /><br />
+				Examples:
+				<ul>
+					<li>github.com githubassets.com yes auto no</li>
+					<li>* youtube.com yes yes yes</li>
+				</ul>
+			</p>
+			<textarea rows="30" wrap="off" id="textarea" style="width: 100%; font-family: monospace;"></textarea>
+			<button id="save">Save</button>
+		</div>
+		<script src="common.js"></script>
+		<script src="options.js"></script>
+	</body>
+</html>

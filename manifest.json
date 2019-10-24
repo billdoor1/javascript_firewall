@@ -1,0 +1,32 @@
+{
+	"manifest_version": 2,
+	"name": "Javascript Firewall",
+	"version": "1.0",
+	"description": "Block JavaScript of unwanted origin.",
+
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "javascript_firewall@example.com"
+		}
+	},
+	
+	"icons": {
+		"48": "icons/icon.svg",
+		"96": "icons/icon.svg"
+	},
+	
+	"permissions": ["storage", "webRequest", "webRequestBlocking", "activeTab", "*://*/*"],
+
+	"browser_action": {
+		"default_icon": "icons/icon.svg",
+		"default_popup": "popup.html"
+	},
+	
+	"background": {
+		"scripts": ["background.js"]
+	},
+
+	"options_ui": {
+		"page": "options.html"
+	}
+}

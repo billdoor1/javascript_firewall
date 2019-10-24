@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="popup.css"/>
+	</head>
+	
+	<body>
+		<div id="disabled" class="hidden warning">The extension is disabled and will not block anything.</div>
+		<table id="table" class="hidden">
+			<thead>
+				<tr>
+					<th>
+						<select id="context"></select>
+						<img title="Reload the page" id="reload" src="icons/reload.png" />
+						<img title="Manage all rules" id="options" src="icons/options.png" />
+						<img title="Disable/Enable" id="disable" src="icons/power.png" />
+						<img title="Delete all rules for this website" id="delete" src="icons/can.png" />
+					</th>
+					<th id="*0" title="JavaScript">JS</th>
+					<th id="*1" title="XMLHttpRequest">XHR</th>
+					<th id="*2" title="<iframe> or <frame>">FRAME</th>
+				</tr>
+			</thead>
+			<tbody id="counters"></tbody>
+		</table>
+		<div id="error">Error, try to reload the page.</div>
+		<script src="common.js"></script>
+		<script src="popup.js"></script>
+	</body>
+</html>
