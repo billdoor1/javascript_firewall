@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Javascript Firewall",
-	"version": "1.0",
+	"version": "1.1",
 	"description": "Block JavaScript of unwanted origin.",
 
 	"browser_specific_settings": {
@@ -15,7 +15,7 @@
 		"96": "icons/icon.svg"
 	},
 	
-	"permissions": ["storage", "webRequest", "webRequestBlocking", "activeTab", "*://*/*"],
+	"permissions": ["storage", "webRequest", "webRequestBlocking", "webNavigation", "activeTab", "*://*/*"],
 
 	"browser_action": {
 		"default_icon": "icons/icon.svg",

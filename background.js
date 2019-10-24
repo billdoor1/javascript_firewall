@@ -1,6 +1,6 @@
 var rules = { };
 var counters = { };
-const types = ['script', 'xmlhttprequest', 'sub_frame', 'websocket'];
+const types = ['script', 'xmlhttprequest', 'sub_frame', 'websocket', 'beacon', 'csp_report', 'ping', 'object'];
 var enabled = true;
 
 function* domains(hostname, all = false)
@@ -46,25 +46,49 @@ function rule_update(rule)
 	browser.storage.local.set({ rules: rules });
 }
 
-function counters_init(tab_id, hostname)
+function counters_init(tab_id, tab_url, hostname)
 {
 	for (let h of domains(hostname))
 	{
-		if (counters[tab_id].hostnames.hasOwnProperty(h))
+		if (counters[tab_id][tab_url].hasOwnProperty(h))
 			break;
-		counters[tab_id].hostnames[h] = [0, 0, 0];
+		counters[tab_id][tab_url][h] = [0, 0, 0];
+	}
+}
+
+function handler_navigation(request)
+{
+	if (request.frameId == 0 && counters.hasOwnProperty(request.tabId))
+	{
+		let url = new URL(request.url);
+		if (counters[request.tabId].hasOwnProperty(url.origin + url.pathname))
+			counters[request.tabId].url = url.origin + url.pathname;
+	}
+}
+
+function handler_history(request)
+{
+	if (request.frameId == 0 && counters.hasOwnProperty(request.tabId))
+	{
+		let url = new URL(request.url);
+		let tab_url = counters[request.tabId].url;
+		if (url.hostname == new URL(tab_url).hostname)
+			counters[request.tabId][url.origin + url.pathname] = counters[request.tabId][tab_url];
 	}
 }
 
 function handler_headers(request)
 {
-	let hostname = new URL(request.url).hostname;
-	if (hostname.includes("."))
+	let url = new URL(request.url);
+	if (request.tabId != -1 && url.hostname.includes("."))
 	{
-		counters[request.tabId] = { origin: hostname, hostnames: { } };
-		counters_init(request.tabId, hostname);
+		if (!counters.hasOwnProperty(request.tabId))
+			counters[request.tabId] = { };
+		counters[request.tabId].url = url.origin + url.pathname;
+		counters[request.tabId][counters[request.tabId].url] = { };
+		counters_init(request.tabId, counters[request.tabId].url, url.hostname);
 		
-		if (enabled && request_allow(hostname, hostname, 0) < 2)
+		if (enabled && request_allow(url.hostname, url.hostname, 0) < 2)
 		{
 			request.responseHeaders.push({ name: 'Content-Security-Policy', value: "script-src 'none';" });
 			return { responseHeaders: request.responseHeaders };
@@ -78,12 +102,14 @@ function handler_request(request)
 	if (!counters.hasOwnProperty(request.tabId))
 		return { };
 
-	let hostname_origin = counters[request.tabId].origin;
+	let tab_url = new URL(request.frameId == 0 ? request.originUrl : counters[request.tabId].url);
+	let hostname_origin = tab_url.hostname;
+	tab_url = tab_url.origin + tab_url.pathname;
 	let hostname_request = new URL(request.url).hostname;
-	let request_type = [0, 1, 2, 1][types.indexOf(request.type)];
+	let request_type = [0, 1, 2, 1, 1, 1, 1, 2][types.indexOf(request.type)];
 
-	counters_init(request.tabId, hostname_request);
-	counters[request.tabId].hostnames[hostname_request][request_type] += 1;
+	counters_init(request.tabId, tab_url, hostname_request);
+	counters[request.tabId][tab_url][hostname_request][request_type] += 1;
 	
 	return { cancel: enabled && request_allow(hostname_origin, hostname_request, request_type) < 2 };
 }
@@ -96,24 +122,19 @@ function handler_tab_removed(tab_id, remove_info)
 function handler_message(message)
 {
 	if (message.length > 0)
-	{
 		rule_update(message);
-	}
 	else
-	{
-		enabled = !enabled;
-		browser.browserAction.setBadgeText({ text: enabled ? "" : "!" });
-	}
+		browser.browserAction.setBadgeText({ text: (enabled = !enabled) ? "" : "!" });
 }
 
-browser.storage.local.get({ rules: { } }).then(r => {
-	rules = r.rules;
-	
-	browser.webRequest.onHeadersReceived.addListener(
-		handler_headers, { urls: ["*://*/*"], types: ["main_frame"] }, ["blocking", "responseHeaders"]);
-	browser.webRequest.onBeforeRequest.addListener(handler_request, { urls: ["*://*/*"], types: types }, ["blocking"]);
-	browser.tabs.onRemoved.addListener(handler_tab_removed);
-	browser.runtime.onMessage.addListener(handler_message);
-	
-	browser.browserAction.setBadgeBackgroundColor({ color: "#B60200" });
-});
+browser.storage.local.get({ rules: { } }).then(r => rules = r.rules);
+
+browser.webRequest.onHeadersReceived.addListener(
+	handler_headers, { urls: ["*://*/*"], types: ["main_frame"] }, ["blocking", "responseHeaders"]);
+browser.webRequest.onBeforeRequest.addListener(handler_request, { urls: ["*://*/*"], types: types }, ["blocking"]);
+browser.webNavigation.onBeforeNavigate.addListener(handler_navigation);	
+browser.webNavigation.onHistoryStateUpdated.addListener(handler_history);
+browser.tabs.onRemoved.addListener(handler_tab_removed);
+browser.runtime.onMessage.addListener(handler_message);
+
+browser.browserAction.setBadgeBackgroundColor({ color: "#B60200" });

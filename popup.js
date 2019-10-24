@@ -11,13 +11,14 @@ function show_rules()
 	let table_counters = $("counters");
 	table_counters.innerHTML = '';
 
-	[0, 1, 2].forEach(i => $("*" + i).className = status[request_allow(origin, "*", i)]);	
-	for (let hostname of Object.keys(tab.hostnames).sort(compare_hostnames))
+	[0, 1, 2].forEach(i => $("*" + i).className = status[request_allow(origin, "*", i)]);
+	let tab_origin = new URL(tab.url).hostname;
+	for (let hostname of Object.keys(tab[tab.url]).sort(compare_hostnames))
 	{
-		let counters = tab.hostnames[hostname];
+		let counters = tab[tab.url][hostname];
 		let colors = [0, 1, 2].map(i => status[request_allow(origin, hostname, i)]);
 		let border = hostname.split(".").length == 2 ? 'domain' : '';
-		let highlight = hostname == tab.origin ? 'highlight' : '';
+		let highlight = hostname == tab_origin ? 'highlight' : '';
 		
 		let tr = document.createElement("tr");
 		tr.innerHTML = `<td class="hostname ${border} ${highlight}">${hostname}</td>
@@ -33,10 +34,12 @@ function show_rules()
 }
 
 browser.tabs.query({ currentWindow: true, active: true }).then(tabs => {
+	let url = new URL(tabs[0].url);
 	tab = browser.extension.getBackgroundPage().counters[tabs[0].id];
-	if (tab && new URL(tabs[0].url).hostname == tab.origin)
+	if (tab && tab.hasOwnProperty(url.origin + url.pathname))
 	{
-		for (let h = tab.origin; h.includes("."); h = h.slice(h.indexOf(".") + 1))
+		tab.url = url.origin + url.pathname;
+		for (let h = new URL(tab.url).hostname; h.includes("."); h = h.slice(h.indexOf(".") + 1))
 			$("context").insertAdjacentHTML('beforeend', `<option value="${h}">${h}</option>`);
 		$("context").insertAdjacentHTML('beforeend', '<option value="*">all websites</option>');
 		
@@ -49,7 +52,7 @@ browser.tabs.query({ currentWindow: true, active: true }).then(tabs => {
 		$("reload").onclick = () => { browser.tabs.reload(); window.close(); };
 		$("options").onclick = () => { browser.runtime.openOptionsPage(); window.close(); };
 		$("disable").onclick = () => { browser.runtime.sendMessage([]); $("disabled").classList.toggle("hidden"); };
-		$("delete").onclick = () => { browser.runtime.sendMessage([tab.origin]).then(show_rules); };
+		$("delete").onclick = () => { browser.runtime.sendMessage([new URL(tab.url).hostname]).then(show_rules); };
 		[0, 1, 2].forEach(i => $("*" + i).onclick = td_click);
 		
 		show_rules();
