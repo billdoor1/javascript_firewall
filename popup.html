@@ -5,25 +5,27 @@
 	</head>
 	
 	<body>
-		<div id="disabled" class="hidden warning">The extension is disabled and will not block anything.</div>
+		<div id="disabled" class="hidden warning">The extension is disabled for this tab and will not block anything.</div>
 		<table id="table" class="hidden">
 			<thead>
 				<tr>
 					<th>
 						<select id="context"></select>
 						<img title="Reload the page" id="reload" src="icons/reload.png" />
-						<img title="Manage all rules" id="options" src="icons/options.png" />
-						<img title="Disable/Enable" id="disable" src="icons/power.png" />
-						<img title="Delete all rules for this website" id="delete" src="icons/can.png" />
+						<img title="Settings and rules" id="options" src="icons/options.png" />
+						<img title="Disable/Enable for this tab" id="disable" src="icons/power.png" />
+						<img title="Delete the rules created for this website" id="delete" src="icons/can.png" />
 					</th>
-					<th id="*0" title="JavaScript">JS</th>
+					<th id="*0" title="JavaScript: <script> and Worker">JS</th>
 					<th id="*1" title="XMLHttpRequest, WebSocket, beacon, ping and Content-Security-Policy report">XHR</th>
 					<th id="*2" title="<iframe>, <frame>, <object> and <embed>">FRAME</th>
 				</tr>
 			</thead>
 			<tbody id="counters"></tbody>
 		</table>
-		<div id="error">Try to reload the page.</div>
+		<div id="error_restricted" class="hidden">The extension does not work on this page.</div>
+		<div id="error_reload" class="hidden">The page must be reloaded.</div>
+		<div id="error_private" class="hidden">The popup does not work in private browsing.</div>
 		<script src="common.js"></script>
 		<script src="popup.js"></script>
 	</body>

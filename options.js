@@ -1,6 +1,6 @@
 let rules = null;
 const text = ["no", "yes", "auto"];
-const regex_valid = /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}$/;
+const regex_valid = /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z0-9]+$/;
 
 function td_click(event)
 {
@@ -80,4 +80,10 @@ function show()
 $("mode").onchange = show;
 $("search").oninput = show_rules;
 $("save").onclick = save;
+let option_badge = $("option_badge");
+option_badge.checked = browser.extension.getBackgroundPage().badge;
+option_badge.onchange = function () {
+		browser.extension.getBackgroundPage().badge = option_badge.checked;
+		browser.storage.local.set({ badge: option_badge.checked });
+	};
 show();

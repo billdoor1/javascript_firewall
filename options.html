@@ -5,8 +5,14 @@
 	</head>
 
 	<body>
+		<h1>Settings</h1>
 		<div>
-			<label for="mode">View mode: </label>
+			<input type="checkbox" id="option_badge">
+			<label for="option_badge">Show the number of blocked requests on the icon</label>
+		</div>
+		<h1>Rules</h1>
+		<div>
+			<label for="mode">Edit mode: </label>
 			<select id="mode">
 				<option value="table">Table</option>
 				<option value="text">Text</option>
@@ -38,7 +44,7 @@
 			</p>
 			<textarea rows="30" wrap="off" id="textarea" style="width: 100%; font-family: monospace;"></textarea>
 			<p>
-				<button id="save">Save</button>
+				<button id="save">Save the rules</button>
 			</p>
 		</div>
 		<script src="common.js"></script>

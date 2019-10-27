@@ -1,5 +1,6 @@
 var $ = document.getElementById.bind(document);
-var request_allow = browser.extension.getBackgroundPage().request_allow;
+var background = browser.extension.getBackgroundPage();
+var request_allow = background ? background.request_allow : undefined;
 const status = ['blocked', 'blocked_auto', 'allowed_auto', 'allowed'];
 
 function compare_hostnames(a, b)

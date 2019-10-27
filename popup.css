@@ -4,15 +4,25 @@
   font-family: Arial, sans-serif;
 }
 
+h1
+{
+	font-size: 16px;
+}
+
 body
 {
 	background-color: #EFEFEF;
 }
 
-select, .highlight
+#context, .highlight
 {
 	font-weight: bold;
 	text-align:right;
+}
+
+#context option
+{
+	direction: rtl;
 }
 
 .warning
