@@ -77,13 +77,21 @@ function show()
 		show_rules_text();
 }
 
-$("mode").onchange = show;
-$("search").oninput = show_rules;
-$("save").onclick = save;
-let option_badge = $("option_badge");
-option_badge.checked = browser.extension.getBackgroundPage().badge;
-option_badge.onchange = function () {
-		browser.extension.getBackgroundPage().badge = option_badge.checked;
-		browser.storage.local.set({ badge: option_badge.checked });
-	};
-show();
+if (background === null)
+{
+	$("error_private").classList.remove("hidden");
+	$("options").classList.add("hidden");
+}
+else
+{
+	$("mode").onchange = show;
+	$("search").oninput = show_rules;
+	$("save").onclick = save;
+	let option_badge = $("option_badge");
+	option_badge.checked = browser.extension.getBackgroundPage().badge;
+	option_badge.onchange = function () {
+			browser.extension.getBackgroundPage().badge = option_badge.checked;
+			browser.storage.local.set({ badge: option_badge.checked });
+		};
+	show();
+}

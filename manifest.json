@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Javascript Firewall",
-	"version": "1.2",
+	"version": "1.2.1",
 	"description": "Block JavaScript of unwanted origin.",
 
 	"browser_specific_settings": {

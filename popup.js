@@ -39,7 +39,6 @@ function show_rules()
 
 browser.tabs.query({ currentWindow: true, active: true }).then(tabs => {
 	let url = new URL(tabs[0].url); url = url.origin + url.pathname + url.search;
-	let background = browser.extension.getBackgroundPage();
 	tab = background ? background.counters[tabs[0].id] : null;
 	if (tab && tab.hasOwnProperty(url))
 	{

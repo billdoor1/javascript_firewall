@@ -5,48 +5,51 @@
 	</head>
 
 	<body>
-		<h1>Settings</h1>
-		<div>
-			<input type="checkbox" id="option_badge">
-			<label for="option_badge">Show the number of blocked requests on the icon</label>
+		<div id="options">
+			<h1>Settings</h1>
+			<div>
+				<input type="checkbox" id="option_badge">
+				<label for="option_badge">Show the number of blocked requests on the icon</label>
+			</div>
+			<h1>Rules</h1>
+			<div>
+				<label for="mode">Edit mode: </label>
+				<select id="mode">
+					<option value="table">Table</option>
+					<option value="text">Text</option>
+				</select>
+			</div>
+			<div id="table" class="hidden">
+				<p><input type="text" id="search" placeholder="Search..."></p>
+				<table class="borders" style="width: 100%;">
+					<thead>
+						<tr>
+							<th>Origin</th>
+							<th>Request</th>
+							<th>JS</th>
+							<th>XHR</th>
+							<th>FRAME</th>
+						</tr>
+					</thead>
+					<tbody id="rules"></tbody>
+				</table>
+			</div>
+			<div id="text" class="hidden">
+				<p>
+					Syntax: origin request javascript xhr frame<br /><br />
+					Examples:
+					<ul>
+						<li>github.com githubassets.com yes auto no</li>
+						<li>* youtube.com yes yes yes</li>
+					</ul>
+				</p>
+				<textarea rows="30" wrap="off" id="textarea" style="width: 100%; font-family: monospace;"></textarea>
+				<p>
+					<button id="save">Save the rules</button>
+				</p>
+			</div>
 		</div>
-		<h1>Rules</h1>
-		<div>
-			<label for="mode">Edit mode: </label>
-			<select id="mode">
-				<option value="table">Table</option>
-				<option value="text">Text</option>
-			</select>
-		</div>
-		<div id="table" class="hidden">
-			<p><input type="text" id="search" placeholder="Search..."></p>
-			<table class="borders" style="width: 100%;">
-				<thead>
-					<tr>
-						<th>Origin</th>
-						<th>Request</th>
-						<th>JS</th>
-						<th>XHR</th>
-						<th>FRAME</th>
-					</tr>
-				</thead>
-				<tbody id="rules"></tbody>
-			</table>
-		</div>
-		<div id="text" class="hidden">
-			<p>
-				Syntax: origin request javascript xhr frame<br /><br />
-				Examples:
-				<ul>
-					<li>github.com githubassets.com yes auto no</li>
-					<li>* youtube.com yes yes yes</li>
-				</ul>
-			</p>
-			<textarea rows="30" wrap="off" id="textarea" style="width: 100%; font-family: monospace;"></textarea>
-			<p>
-				<button id="save">Save the rules</button>
-			</p>
-		</div>
+		<div id="error_private" class="hidden center">You cannot configure the addon in private browsing.</div>
 		<script src="common.js"></script>
 		<script src="options.js"></script>
 	</body>

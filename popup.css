@@ -32,6 +32,15 @@ body
 	padding-bottom: 6px;
 }
 
+.center
+{
+	font-weight: bold;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 img
 {
 	cursor: pointer;

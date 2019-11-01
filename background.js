@@ -69,7 +69,7 @@ function badge_update(tab_id, value = null, color = null)
 	let counter = counters[tab_id][counters[tab_id].url];
 	if (color !== null)
 		browser.browserAction.setBadgeBackgroundColor({ color: color, tabId: tab_id });
-	value = counter == undefined ? "" : value !== null ? value : counter.badge.toString();
+	value = value !== null ? value : counter == undefined || counter.badge == 0 ? "" : counter.badge.toString();
 	browser.browserAction.setBadgeText({ text: value, tabId: tab_id });
 }
 
