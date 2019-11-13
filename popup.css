@@ -97,6 +97,11 @@ td:not(.hostname), th:not(:first-of-type)
 	border: 1px solid black;
 }
 
+.rotate
+{
+	transform: rotate(180deg);
+}
+
 .allowed
 {
 	color: white;

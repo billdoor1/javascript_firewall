@@ -89,9 +89,6 @@ else
 	$("save").onclick = save;
 	let option_badge = $("option_badge");
 	option_badge.checked = browser.extension.getBackgroundPage().badge;
-	option_badge.onchange = function () {
-			browser.extension.getBackgroundPage().badge = option_badge.checked;
-			browser.storage.local.set({ badge: option_badge.checked });
-		};
+	option_badge.onchange = () => browser.runtime.sendMessage([]);
 	show();
 }

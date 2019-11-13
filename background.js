@@ -64,12 +64,13 @@ function counters_init(tab_id, tab_url, hostname)
 	}
 }
 
-function badge_update(tab_id, value = null, color = null)
+function badge_update(tab_id, color = false)
 {
 	let counter = counters[tab_id][counters[tab_id].url];
-	if (color !== null)
-		browser.browserAction.setBadgeBackgroundColor({ color: color, tabId: tab_id });
-	value = value !== null ? value : counter == undefined || counter.badge == 0 ? "" : counter.badge.toString();
+	let enabled = counters[tab_id].enabled;
+	if (color)
+		browser.browserAction.setBadgeBackgroundColor({ color: enabled ? "#4d4dff" : "#B60200", tabId: tab_id });
+	let value = !enabled ? "!" : !badge || counter == undefined || counter.badge == 0 ? "" : counter.badge.toString();
 	browser.browserAction.setBadgeText({ text: value, tabId: tab_id });
 }
 
@@ -156,10 +157,8 @@ function handler_committed(request)
 			counters[request.tabId] = { enabled: true };
 		let url = new URL(request.url);
 		counters[request.tabId].url = url.origin + url.pathname + url.search;
-		if (!counters[request.tabId].enabled)
-			badge_update(request.tabId, "!", "#B60200");
-		else if (badge)
-			badge_update(request.tabId);
+		if (badge || !counters[request.tabId].enabled)
+			badge_update(request.tabId, !counters[request.tabId].enabled);
 	}
 }
 
@@ -173,8 +172,14 @@ function handler_message(message)
 	if (message.length == 1 && typeof message[0] === "number")
 	{
 		counters[message[0]].enabled = !counters[message[0]].enabled;
-		let color = counters[message[0]].enabled ? "#4d4dff" : "#B60200";
-		badge_update(message[0], !counters[message[0]].enabled ? "!" : badge ? null : "", color);
+		badge_update(message[0], true);
+	}
+	else if (message.length == 0)
+	{
+		badge = !badge;
+		browser.storage.local.set({ badge: badge });
+		for (let tab_id in counters)
+			badge_update(parseInt(tab_id, 10));
 	}
 	else
 	{
